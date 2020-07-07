@@ -3,15 +3,14 @@ use std::io::{BufRead, BufReader};
 use std::collections::HashMap;
 use rand::Rng;
 use gnuplot::{Figure, Caption, Color};
-use std::vec;
 
 const STOCK_FILENAME: &str = "stocks.txt";
 const BOND_FILENAME: &str = "bonds.txt";
 const YEARLY_CONTRIBUTION: f64 = 50_000.0;
 const TIME_HORIZON_IN_YEARS: i32 = 40;
-const SIMULATIONS: i32 = 100;
+const SIMULATIONS: i32 = 100_000;
 const INITIAL_CAPITAL: f64 = 50_000.0;
-const STOCK_WEIGHT: f64 = 0.75;
+const STOCK_WEIGHT: f64 = 1.0;
 const BOND_WEIGHT: f64 = 1.0-STOCK_WEIGHT;
 
 fn main() {
@@ -58,9 +57,19 @@ fn calculate_year_performance(stock_performance: &f64, bond_performance: &f64, c
 
 fn monte_carlo_generator(stock_hashmap: &HashMap<usize, f64>, bond_hashmap: &HashMap<usize, f64>) -> Vec<f64>{
     let mut vec = Vec::new();
+    let mut min_val = 100000000.0;
+    let mut max_val = 0.0;
+
     for _ in 0..SIMULATIONS {
         let result = simulate_investor_lifetime(&stock_hashmap, &bond_hashmap);
+        if result < min_val {
+            min_val = result;
+        }
+        if result > max_val {
+            max_val = result;
+        }
         vec.push(result);
     }
+    println!("Worst outcome: {}, Best outcome: {}", min_val, max_val);
     return vec;
 }
