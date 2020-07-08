@@ -9,22 +9,26 @@ use plotlib::style::{PointMarker, PointStyle};
 
 const STOCK_FILENAME: &str = "stocks.txt";
 const BOND_FILENAME: &str = "bonds.txt";
-const YEARLY_CONTRIBUTION: f64 = 50_000.0;
-const TIME_HORIZON_IN_YEARS: i32 = 40;
-const SIMULATIONS: i32 = 100;
-const INITIAL_CAPITAL: f64 = 50_000.0;
-const STOCK_WEIGHT: f64 = 1.0;
+const YEARLY_CONTRIBUTION: f64 = 60_000.0;
+const TIME_HORIZON_IN_YEARS: i32 = 25;
+const SIMULATIONS: i32 = 1;
+const INITIAL_CAPITAL: f64 = 135_000.0;
+const STOCK_WEIGHT: f64 = 0.75;
 const BOND_WEIGHT: f64 = 1.0-STOCK_WEIGHT;
 
 fn main() {
     let stock_hashmap = parse_data(&STOCK_FILENAME);
     let bond_hashmap = parse_data(&BOND_FILENAME);
     let simulation_results = monte_carlo_generator(&stock_hashmap, &bond_hashmap);
+    plot_data(simulation_results);
 
+}
+
+fn plot_data(simulation_results: Vec<Vec<(f64, f64)>>) {
     let test_data = simulation_results.get(0).unwrap();
     let s1: Plot = Plot::new(test_data.to_vec()).point_style(
         PointStyle::new()
-            .marker(PointMarker::Circle) // setting the marker to be a square
+            .marker(PointMarker::Circle) // setting the marker to be a circle
             .colour("#DD3355"),
     ); // and a custom colour
 
